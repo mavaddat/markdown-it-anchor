@@ -216,11 +216,57 @@ test('uniqueSlugStartIndex', t => {
   )
 })
 
+test('nested things', t => {
+  t.is(
+    md({ html: true }).use(anchor).render('# H1 [link](link) ![image](link) `code` ~~strike~~ _em_ **strong** <span>inline html</span>'),
+    '<h1 id="h1-link-code-strike-em-strong-inline-html" tabindex="-1">H1 <a href="link">link</a> <img src="link" alt="image"> <code>code</code> <s>strike</s> <em>em</em> <strong>strong</strong> <span>inline html</span></h1>\n'
+  )
+})
+
+test('getTokensText', t => {
+  t.is(
+    md().use(anchor, {
+      getTokensText: tokens => tokens.filter(t => ['text', 'image'].includes(t.type)).map(t => t.content).join('')
+    }).render('# H1 ![image](link) `code` _em_'),
+    '<h1 id="h1-image-em" tabindex="-1">H1 <img src="link" alt="image"> <code>code</code> <em>em</em></h1>\n'
+  )
+})
+
+test('slugify', async t => {
+  const slugify = (await import('@sindresorhus/slugify')).default
+
+  t.is(
+    md().use(anchor, { slugify }).render('# foo bar'),
+    '<h1 id="foo-bar" tabindex="-1">foo bar</h1>\n'
+  )
+})
+
+test('slugify with state', t => {
+  t.is(
+    md().use(anchor, { slugifyWithState: (title, state) => `${state.env.docId}-${title}` }).render('# bar', { docId: 'foo' }),
+    '<h1 id="foo-bar" tabindex="-1">bar</h1>\n'
+  )
+})
+
 nest('permalink.linkInsideHeader', test => {
   test('default', t => {
     t.is(
       md().use(anchor, { permalink: anchor.permalink.linkInsideHeader() }).render('# H1'),
       '<h1 id="h1" tabindex="-1">H1 <a class="header-anchor" href="#h1">#</a></h1>\n'
+    )
+  })
+
+  test('no space', t => {
+    t.is(
+      md().use(anchor, { permalink: anchor.permalink.linkInsideHeader({ space: false }) }).render('# H1'),
+      '<h1 id="h1" tabindex="-1">H1<a class="header-anchor" href="#h1">#</a></h1>\n'
+    )
+  })
+
+  test('custom space', t => {
+    t.is(
+      md().use(anchor, { permalink: anchor.permalink.linkInsideHeader({ space: '&nbsp;' }) }).render('# H1'),
+      '<h1 id="h1" tabindex="-1">H1&nbsp;<a class="header-anchor" href="#h1">#</a></h1>\n'
     )
   })
 
@@ -235,6 +281,20 @@ nest('permalink.linkInsideHeader', test => {
         })
       }).render('# H1'),
       `<h1 id="h1" tabindex="-1"><a class="header-anchor" href="#h1">${symbol}</a> H1</h1>\n`
+    )
+  })
+
+  test('renderAttrs', t => {
+    t.is(
+      md().use(anchor, {
+        permalink: anchor.permalink.linkInsideHeader({
+          renderAttrs: () => ({
+            class: 'should-merge-class',
+            id: 'some-id'
+          })
+        })
+      }).render('# H1'),
+      '<h1 id="h1" tabindex="-1">H1 <a class="header-anchor should-merge-class" href="#h1" id="some-id">#</a></h1>\n'
     )
   })
 })
@@ -379,6 +439,20 @@ nest('permalink.linkAfterHeader', test => {
 
           linkAfterHeader(slug, opts, state, idx + 1)
         }
+      }).render('# H1'),
+      '<div class="wrapper">\n<h1 id="h1" tabindex="-1">H1</h1>\n<a class="header-anchor" href="#h1"><span class="visually-hidden">Permalink to “H1”</span> <span aria-hidden="true">#</span></a></div>\n'
+    )
+  })
+
+  test('custom native wrapper', t => {
+    t.is(
+      md().use(anchor, {
+        permalink: anchor.permalink.linkAfterHeader({
+          style: 'visually-hidden',
+          assistiveText: title => `Permalink to “${title}”`,
+          visuallyHiddenClass: 'visually-hidden',
+          wrapper: ['<div class="wrapper">', '</div>']
+        })
       }).render('# H1'),
       '<div class="wrapper">\n<h1 id="h1" tabindex="-1">H1</h1>\n<a class="header-anchor" href="#h1"><span class="visually-hidden">Permalink to “H1”</span> <span aria-hidden="true">#</span></a></div>\n'
     )

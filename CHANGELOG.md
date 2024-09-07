@@ -6,6 +6,50 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [9.2.0] - 2024-09-07
+* Re-export `Token` and `State` types from markdown-it. ([#135])
+
+## [9.1.0] - 2024-08-24
+* Introduce a `slugifyWithState` option. ([#125], [#134])
+
+## [9.0.2] - 2024-08-24
+* Support duplicated `class` attributes. ([#133])
+
+## [9.0.1] - 2024-05-17
+* Fix types following upgrade. ([#131])
+
+## [9.0.0] - 2024-05-16
+* Support markdown-it 14. This may be breaking hence the major. ([#129], [#128])
+
+## [8.6.7] - 2023-02-16
+* Fix link in deprecation warning. ([#123])
+
+## [8.6.6] - 2022-12-18
+* `npm audit fix`. ([#121])
+
+## [8.6.5] - 2022-09-12
+* Support native ESM modules with TypeScript. ([#118])
+
+## [8.6.4] - 2021-05-11
+* Fix `linkAfterHeader` type to support `wrapper` tuple. ([#116])
+
+## [8.6.3] - 2021-05-05
+* Fix permalink generator type to return `void` instead of `string`. ([#115])
+
+## [8.6.2] - 2021-04-08
+* Fix types to reflect optional permalink arguments and properties. ([#114])
+
+## [8.6.1] - 2021-04-08
+* Fix type for `headerLink` permalink options. ([#108])
+* Allow to customize the `space` text (e.g. using `&nbsp;`). ([#88])
+
+## [8.6.0] - 2021-04-08
+* Add a `getTokensText` option to customize how we extract the title
+  text from the heading tokens. ([#112])
+
+## [8.5.0] - 2021-04-04
+* Support wrapping output of `linkAfterHeader`. ([#100], [#110])
+
 ## [8.4.1] - 2021-10-11
 * Attempt to fix `npm publish` that didn't publish previous version.
 
@@ -210,7 +254,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [1.0.0] - 2015-03-18
 * Initial release.
 
-[Unreleased]: https://github.com/valeriangalliat/markdown-it-anchor/compare/v8.4.1...HEAD
+[Unreleased]: https://github.com/valeriangalliat/markdown-it-anchor/compare/v9.2.0...HEAD
+[9.2.0]: https://github.com/valeriangalliat/markdown-it-anchor/compare/v9.1.0...v9.2.0
+[9.1.0]: https://github.com/valeriangalliat/markdown-it-anchor/compare/v9.0.2...v9.1.0
+[9.0.2]: https://github.com/valeriangalliat/markdown-it-anchor/compare/v9.0.1...v9.0.2
+[9.0.1]: https://github.com/valeriangalliat/markdown-it-anchor/compare/v9.0.0...v9.0.1
+[9.0.0]: https://github.com/valeriangalliat/markdown-it-anchor/compare/v8.6.7...v9.0.0
+[8.6.7]: https://github.com/valeriangalliat/markdown-it-anchor/compare/v8.6.6...v8.6.7
+[8.6.6]: https://github.com/valeriangalliat/markdown-it-anchor/compare/v8.6.5...v8.6.6
+[8.6.5]: https://github.com/valeriangalliat/markdown-it-anchor/compare/v8.6.4...v8.6.5
+[8.6.4]: https://github.com/valeriangalliat/markdown-it-anchor/compare/v8.6.3...v8.6.4
+[8.6.3]: https://github.com/valeriangalliat/markdown-it-anchor/compare/v8.6.2...v8.6.3
+[8.6.2]: https://github.com/valeriangalliat/markdown-it-anchor/compare/v8.6.1...v8.6.2
+[8.6.1]: https://github.com/valeriangalliat/markdown-it-anchor/compare/v8.6.0...v8.6.1
+[8.6.0]: https://github.com/valeriangalliat/markdown-it-anchor/compare/v8.5.0...v8.6.0
+[8.5.0]: https://github.com/valeriangalliat/markdown-it-anchor/compare/v8.4.1...v8.5.0
 [8.4.1]: https://github.com/valeriangalliat/markdown-it-anchor/compare/v8.4.0...v8.4.1
 [8.4.0]: https://github.com/valeriangalliat/markdown-it-anchor/compare/v8.3.1...v8.4.0
 [8.3.1]: https://github.com/valeriangalliat/markdown-it-anchor/compare/v8.3.0...v8.3.1
@@ -292,6 +350,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [#83]: https://github.com/valeriangalliat/markdown-it-anchor/pull/83
 [#85]: https://github.com/valeriangalliat/markdown-it-anchor/issues/85
 [#86]: https://github.com/valeriangalliat/markdown-it-anchor/pull/86
+[#88]: https://github.com/valeriangalliat/markdown-it-anchor/issues/88
 [#89]: https://github.com/valeriangalliat/markdown-it-anchor/pull/89
 [#91]: https://github.com/valeriangalliat/markdown-it-anchor/pull/91
 [#93]: https://github.com/valeriangalliat/markdown-it-anchor/pull/93
@@ -305,5 +364,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [#103]: https://github.com/valeriangalliat/markdown-it-anchor/issues/103
 [#106]: https://github.com/valeriangalliat/markdown-it-anchor/pull/106
 [#107]: https://github.com/valeriangalliat/markdown-it-anchor/issues/107
+[#108]: https://github.com/valeriangalliat/markdown-it-anchor/issues/108
+[#110]: https://github.com/valeriangalliat/markdown-it-anchor/issues/110
+[#112]: https://github.com/valeriangalliat/markdown-it-anchor/issues/112
+[#114]: https://github.com/valeriangalliat/markdown-it-anchor/pull/114
+[#115]: https://github.com/valeriangalliat/markdown-it-anchor/issues/115
+[#116]: https://github.com/valeriangalliat/markdown-it-anchor/issues/116
+[#118]: https://github.com/valeriangalliat/markdown-it-anchor/issues/118
+[#121]: https://github.com/valeriangalliat/markdown-it-anchor/pull/121
+[#123]: https://github.com/valeriangalliat/markdown-it-anchor/issues/123
+[#125]: https://github.com/valeriangalliat/markdown-it-anchor/pull/125
+[#128]: https://github.com/valeriangalliat/markdown-it-anchor/issues/128
+[#129]: https://github.com/valeriangalliat/markdown-it-anchor/pull/129
+[#131]: https://github.com/valeriangalliat/markdown-it-anchor/pull/131
+[#133]: https://github.com/valeriangalliat/markdown-it-anchor/pull/133
+[#134]: https://github.com/valeriangalliat/markdown-it-anchor/pull/134
+[#135]: https://github.com/valeriangalliat/markdown-it-anchor/pull/135
 
 [`6fcc502`]: https://github.com/valeriangalliat/markdown-it-anchor/commit/6fcc50233d593458aa883e5b515cb8311114555c

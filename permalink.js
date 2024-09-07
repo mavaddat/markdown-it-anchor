@@ -13,7 +13,7 @@ const permalinkSymbolMeta = {
 
 export function legacy (slug, opts, state, idx) {
   if (!emittedWarning) {
-    const warningText = 'Using deprecated markdown-it-anchor permalink option, see https://github.com/valeriangalliat/markdown-it-anchor#todo-anchor-or-file'
+    const warningText = 'Using deprecated markdown-it-anchor permalink option, see https://github.com/valeriangalliat/markdown-it-anchor#permalinks'
 
     if (typeof process === 'object' && process && process.emitWarning) {
       process.emitWarning(warningText)
@@ -73,22 +73,40 @@ export function makePermalink (renderPermalinkImpl) {
   return renderPermalink
 }
 
+function mergeDuplicateClassAttrs(attrs) {
+  const classValues = [];
+  const mergedAttrs = attrs.filter(([key, value]) => {
+      if (key !== 'class') {
+        return true;
+      }
+      classValues.push(value);
+  });
+
+  if (classValues.length > 0) {
+      mergedAttrs.unshift(['class', classValues.join(' ')]);
+  }
+
+  return mergedAttrs;
+}
+
 export const linkInsideHeader = makePermalink((slug, opts, anchorOpts, state, idx) => {
   const linkTokens = [
     Object.assign(new state.Token('link_open', 'a', 1), {
-      attrs: [
+      attrs: mergeDuplicateClassAttrs([
         ...(opts.class ? [['class', opts.class]] : []),
         ['href', opts.renderHref(slug, state)],
         ...(opts.ariaHidden ? [['aria-hidden', 'true']] : []),
         ...Object.entries(opts.renderAttrs(slug, state))
-      ]
+      ])
     }),
     Object.assign(new state.Token('html_inline', '', 0), { content: opts.symbol, meta: permalinkSymbolMeta }),
     new state.Token('link_close', 'a', -1)
   ]
 
   if (opts.space) {
-    state.tokens[idx + 1].children[position[opts.placement]](Object.assign(new state.Token('text', '', 0), { content: ' ' }))
+    const space = typeof opts.space === 'string' ? opts.space : ' '
+    const type = typeof opts.space === 'string' ? 'html_inline' : 'text'
+    state.tokens[idx + 1].children[position[opts.placement]](Object.assign(new state.Token(type, '', 0), { content: space }))
   }
 
   state.tokens[idx + 1].children[position[opts.placement]](...linkTokens)
@@ -109,11 +127,11 @@ ariaHidden.defaults = Object.assign({}, linkInsideHeader.defaults, {
 export const headerLink = makePermalink((slug, opts, anchorOpts, state, idx) => {
   const linkTokens = [
     Object.assign(new state.Token('link_open', 'a', 1), {
-      attrs: [
+      attrs: mergeDuplicateClassAttrs([
         ...(opts.class ? [['class', opts.class]] : []),
         ['href', opts.renderHref(slug, state)],
         ...Object.entries(opts.renderAttrs(slug, state))
-      ]
+      ])
     }),
     ...(opts.safariReaderFix ? [new state.Token('span_open', 'span', 1)] : []),
     ...state.tokens[idx + 1].children,
@@ -170,7 +188,9 @@ export const linkAfterHeader = makePermalink((slug, opts, anchorOpts, state, idx
     )
 
     if (opts.space) {
-      subLinkTokens[position[opts.placement]](Object.assign(new state.Token('text', '', 0), { content: ' ' }))
+      const space = typeof opts.space === 'string' ? opts.space : ' '
+      const type = typeof opts.space === 'string' ? 'html_inline' : 'text'
+      subLinkTokens[position[opts.placement]](Object.assign(new state.Token(type, '', 0), { content: space }))
     }
 
     subLinkTokens[position[opts.placement]](
@@ -200,17 +220,28 @@ export const linkAfterHeader = makePermalink((slug, opts, anchorOpts, state, idx
 
   const linkTokens = [
     Object.assign(new state.Token('link_open', 'a', 1), {
-      attrs: linkAttrs
+      attrs:  mergeDuplicateClassAttrs(linkAttrs)
     }),
     ...subLinkTokens,
     new state.Token('link_close', 'a', -1),
   ]
 
   state.tokens.splice(idx + 3, 0, ...linkTokens)
+
+  if (opts.wrapper) {
+    state.tokens.splice(idx, 0, Object.assign(new state.Token('html_block', '', 0), {
+      content: opts.wrapper[0] + '\n'
+    }))
+
+    state.tokens.splice(idx + 3 + linkTokens.length + 1, 0, Object.assign(new state.Token('html_block', '', 0), {
+      content: opts.wrapper[1] + '\n'
+    }))
+  }
 })
 
 Object.assign(linkAfterHeader.defaults, {
   style: 'visually-hidden',
   space: true,
-  placement: 'after'
+  placement: 'after',
+  wrapper: null
 })
